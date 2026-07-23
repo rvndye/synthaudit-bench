@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: >-
+  If you use SynthAudit-Bench, please cite it by name and version with its DOI
+  (added at the first benchmark release; see docs/identity.md and GOVERNANCE.md).
+  The benchmark is cited separately from the accompanying paper.
+title: >-
+  SynthAudit-Bench: A Reference-Free Structural Trustworthiness Benchmark for
+  Synthetic Tabular Datasets
+abstract: >-
+  A reference-free benchmark that measures how well an auditing system recovers,
+  from a released tabular file alone, the structural artifacts that can
+  invalidate that file as a machine-learning benchmark. Comprises the Structural
+  Trustworthiness Ontology, census and evaluation corpora, a tool-agnostic
+  auditing task with baselines, a report-card schema, and a compliance suite.
+type: software
+authors:
+  - family-names: Erwin
+    given-names: Randy
+    email: erwinrandy3@gmail.com
+version: "0.0.1"
+date-released: "2026-07-23"
+license: Apache-2.0
+repository-code: "https://github.com/rvndye/synthaudit-bench"
+url: "https://github.com/rvndye/synthaudit-bench"
+keywords:
+  - synthetic data
+  - benchmark
+  - data auditing
+  - benchmark validity
+  - trustworthiness
+  - tabular data
+# A concept DOI is reserved on the first Zenodo deposit and recorded here at the
+# benchmark release (WP12). The `identifiers` DOI entry is intentionally omitted
+# until a real DOI exists, so this file stays valid; see docs/identity.md.

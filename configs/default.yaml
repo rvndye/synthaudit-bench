@@ -1,0 +1,23 @@
+# Global default configuration for SynthAudit-Bench.
+#
+# Base layer of the layered configuration system
+# (defaults < file < profile < environment < CLI < per-dataset). This file is
+# consumed and validated by the `synthaudit_bench.config` module (implemented in
+# a later work package). The values below are the pinned identity and
+# determinism settings that make runs reproducible.
+
+# Version pins. The benchmark and the software are versioned separately
+# (see GOVERNANCE.md).
+benchmark_version: "1.0.0"      # corpus + ontology + specification version
+sto_version: "1.0.0"            # Structural Trustworthiness Ontology version
+schema_version: "1.0.0"         # normative JSON Schema set version
+synthaudit_version: "0.1.0"     # pinned SynthAudit reference implementation (adapter only)
+
+# Determinism.
+seed: 42
+
+# Per-dataset execution limits, enforced by the runner (later work package).
+limits:
+  wall_clock_seconds: 1800
+  memory_mb: 8192
+  max_workers: null             # null => min(physical_cores - 2, 16)

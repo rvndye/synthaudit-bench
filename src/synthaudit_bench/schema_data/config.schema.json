@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://synthaudit-bench.org/schemas/v1.0/config.json",
+  "title": "SynthAudit-Bench Resolved Configuration",
+  "description": "A fully resolved run configuration (architecture Section 8). Its content hash is the config hash recorded in run manifests and cache keys.",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["pins", "root_seed", "thresholds", "limits", "layers", "allow_pin_override"],
+  "properties": {
+    "pins": {
+      "type": "object",
+      "required": ["bench_version", "sto_version", "schema_versions"],
+      "properties": {
+        "bench_version": {"type": "string"},
+        "sto_version": {"type": "string"},
+        "schema_versions": {"type": "object", "additionalProperties": {"type": "string"}},
+        "synthaudit_version": {"type": "string"},
+        "thresholds_ref": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "root_seed": {"type": "integer", "minimum": 0},
+    "thresholds": {"type": "object"},
+    "limits": {
+      "type": "object",
+      "properties": {
+        "wall_clock_s": {"type": "number", "minimum": 0},
+        "memory_mb": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "layers": {"type": "array", "items": {"type": "string"}},
+    "allow_pin_override": {"type": "boolean"},
+    "jobs": {"type": "integer", "minimum": 1},
+    "log_level": {"type": "string"}
+  },
+  "additionalProperties": false
+}

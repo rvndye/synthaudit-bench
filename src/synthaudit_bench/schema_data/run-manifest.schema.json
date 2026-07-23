@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://synthaudit-bench.org/schemas/v1.0/run-manifest.json",
+  "title": "SynthAudit-Bench Run Manifest",
+  "description": "The reproducibility manifest for one scored run (specification Section 9.6, 9.7).",
+  "version": "1.0.0",
+  "type": "object",
+  "required": [
+    "bench_version", "sto_version", "schema_version", "split", "detector",
+    "config_hash", "environment", "root_seed", "limits", "datasets", "timestamps"
+  ],
+  "properties": {
+    "bench_version": {"type": "string"},
+    "sto_version": {"type": "string"},
+    "schema_version": {"type": "string"},
+    "split": {"type": "string"},
+    "detector": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": {"type": "string"},
+        "version": {"type": "string"},
+        "reference_free": {"type": "boolean"},
+        "capabilities": {"type": "array", "items": {"type": "string"}},
+        "probe_family": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "config_hash": {"type": "string"},
+    "environment": {
+      "type": "object",
+      "required": ["python_version", "platform", "dependencies"],
+      "properties": {
+        "python_version": {"type": "string"},
+        "platform": {"type": "string"},
+        "dependencies": {"type": "object", "additionalProperties": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "root_seed": {"type": "integer"},
+    "limits": {
+      "type": "object",
+      "properties": {
+        "wall_clock_s": {"type": "number", "minimum": 0},
+        "memory_mb": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "datasets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["dataset_id", "sha256", "status"],
+        "properties": {
+          "dataset_id": {"type": "string"},
+          "sha256": {"type": "string"},
+          "status": {"type": "string"},
+          "result_hash": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "held_out_seeds": {"type": "array", "items": {"type": "integer"}},
+    "pin_overrides": {"type": "array", "items": {"type": "string"}},
+    "timestamps": {
+      "type": "object",
+      "required": ["started_at", "finished_at"],
+      "properties": {
+        "started_at": {"type": "string"},
+        "finished_at": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -21,6 +21,8 @@ Example:
 
 from __future__ import annotations
 
+import csv
+import io
 import json
 import re
 from collections.abc import Mapping
@@ -80,6 +82,7 @@ class Ontology:
     reserved_symbols: Mapping[str, str]
     compatibility: str
     extension_policy: str
+    traceability: Mapping[str, str]
 
     def get(self, class_id: str) -> ClassDef:
         """Return the class definition for ``class_id``.
@@ -128,8 +131,18 @@ class Ontology:
         deprecation = self.get(class_id).deprecation
         return deprecation.replaced_by if deprecation is not None else None
 
+    def traceability_for(self, class_id: str) -> str | None:
+        """The SynthAudit output field that realizes ``class_id``, if mapped.
+
+        This documents the reference implementation only; the value is an opaque
+        field reference, and importing SynthAudit is never required.
+        """
+        return self.traceability.get(class_id)
+
     @classmethod
-    def from_mapping(cls, data: Mapping[str, Any]) -> Ontology:
+    def from_mapping(
+        cls, data: Mapping[str, Any], traceability: Mapping[str, str] | None = None
+    ) -> Ontology:
         """Build an ontology from a decoded register mapping.
 
         The mapping is assumed to have passed JSON Schema validation. This method
@@ -186,6 +199,7 @@ class Ontology:
             reserved_symbols=MappingProxyType(dict(data["reserved_output_symbols"])),
             compatibility=data["compatibility"],
             extension_policy=data["extension_policy"],
+            traceability=MappingProxyType(dict(traceability or {})),
         )
 
 
@@ -222,6 +236,24 @@ def _read_json(name: str) -> Any:
     return json.loads(resource.read_text(encoding="utf-8"))
 
 
+def _read_traceability(name: str = "traceability.csv") -> dict[str, str]:
+    text = (resources.files(_DATA_PACKAGE) / name).read_text(encoding="utf-8")
+    reader = csv.DictReader(io.StringIO(text))
+    return {str(row["sto_class"]): str(row["synthaudit_field"]) for row in reader}
+
+
+def _require_complete_traceability(ontology: Ontology) -> Ontology:
+    """Guard that every class has a traceability entry.
+
+    Raises:
+        OntologyError: if any class lacks a SynthAudit-field mapping.
+    """
+    missing = [cid for cid in ontology.class_ids if cid not in ontology.traceability]
+    if missing:
+        raise OntologyError(f"traceability incomplete; missing: {', '.join(missing)}")
+    return ontology
+
+
 def _require_declared_version(ontology: Ontology, requested: str) -> Ontology:
     """Guard that a loaded register declares the version its filename requested.
 
@@ -253,7 +285,9 @@ def load(version: str = DEFAULT_VERSION) -> Ontology:
     schema = _read_json(_SCHEMA_NAME)
     register = json.loads(register_resource.read_text(encoding="utf-8"))
     schemas.validate(register, schema, label=f"STO-{version}")
-    return _require_declared_version(Ontology.from_mapping(register), version)
+    ontology = Ontology.from_mapping(register, _read_traceability())
+    _require_declared_version(ontology, version)
+    return _require_complete_traceability(ontology)
 
 
 def available_versions() -> tuple[str, ...]:

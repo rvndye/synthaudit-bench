@@ -1,9 +1,11 @@
-"""JSON Schema validation against the normative Draft 2020-12 schemas.
+"""Low-level JSON Schema validation primitives (Draft 2020-12).
 
 Pure validation helpers used at every IO boundary (per the architecture's
 validate-at-boundaries invariant). Validation is deterministic: when an instance
 is invalid, the first error by JSON-pointer order is reported, so the same input
-always yields the same message.
+always yields the same message. These primitives take an explicit schema
+mapping; the named-schema registry in :mod:`synthaudit_bench.schemas.registry`
+builds on them.
 """
 
 from __future__ import annotations

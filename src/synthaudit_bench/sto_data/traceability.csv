@@ -1,0 +1,17 @@
+sto_class,synthaudit_field,note
+STO-A01,results.identity.identities[type=linear],Minimal Gram-based OLS linear identity
+STO-A02,results.identity.identities[type=linear|balance],Symmetric balance constraint (collapsed)
+STO-A03,results.identity.identities[type=power_law],Log-space identity mining
+STO-A04,results.identity.identities[type=regime_affine],Fixed-effects demeaning
+STO-A05,results.identity.functional_dependencies,g3 mining with dependent non-degeneracy guard
+STO-A06,results.identity.rule_derived_labels,Shallow-tree fidelity with imbalance guards
+STO-A07,results.identity.identities[type=threshold_derivation],Exact univariate separation scan
+STO-A08,results.identity.identities[type=duplicate_column],Correlation and string-equality duplicate scan
+STO-S01,results.profile.duplicate_rows,Exact duplicate-row count
+STO-S02,results.profile.constant_cols,Constant-column detection
+STO-S03,results.profile.lattice_cols,Arithmetic-lattice marginal screen
+STO-S04,results.profile.uniform_sampled_cols,KS-uniform marginal screen
+STO-R01,results.leakage.target_autocorrelation,Target lag-1 autocorrelation (row_order_structure finding)
+STO-R02,results.leakage.train_test_overlap_rows,Hash-join cross-split contamination check
+STO-P01,results.leakage.single_feature_screens,Baseline-relative single-feature dominance
+STO-D01,results.determinism.sweep[class=deterministic|near_deterministic],Out-of-sample GBM determinism sweep

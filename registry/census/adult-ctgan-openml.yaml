@@ -1,0 +1,20 @@
+# Illustrative census record.
+id: adult-ctgan-openml
+title: Synthetic Adult (CTGAN)
+frame_stratum: census
+domain: finance
+generator_family: gan
+generator_tool: "CTGAN 0.10"
+generator_version: "0.10.0"
+provenance_confidence: inferred
+modality: tabular
+task: classification
+target: income
+license: {name: CC BY 4.0, spdx: CC-BY-4.0, redistribute: true, fetch_scriptable: true}
+source:
+  urls: ["https://example.org/adult-ctgan.csv"]
+  sha256: {adult-ctgan.csv: "1111111111111111111111111111111111111111111111111111111111111111"}
+  retrieved: "2026-07-23"
+loader: {format: csv}
+transparency: {generator_described: true, generator_code_available: false, seed_reported: false, artifacts_disclosed: false}
+citation: "Illustrative scaffolding record."

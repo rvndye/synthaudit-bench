@@ -1,0 +1,19 @@
+# Illustrative census record (replaced with real records by the census work package).
+id: grid-stability-sim
+title: Simulated Electrical Grid Stability
+frame_stratum: census
+domain: energy
+generator_family: physics-simulator
+provenance_confidence: documented
+modality: tabular
+task: classification
+target: stabf
+license: {name: CC BY 4.0, spdx: CC-BY-4.0, redistribute: true, fetch_scriptable: true}
+source:
+  urls: ["https://example.org/grid-stability.csv"]
+  sha256: {grid-stability.csv: "0000000000000000000000000000000000000000000000000000000000000000"}
+  retrieved: "2026-07-23"
+loader: {format: csv}
+transparency: {generator_described: true, generator_code_available: true, seed_reported: true, artifacts_disclosed: false}
+citation: "Illustrative scaffolding record."
+notes: "Illustrative example for the registry subsystem; not a real data assertion."

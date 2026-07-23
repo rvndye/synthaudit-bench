@@ -1,0 +1,20 @@
+# Illustrative controlled-corpus record (controlled-generation study).
+id: ctgan-adult-seed1
+title: Controlled Generation, CTGAN on Adult, seed 1
+frame_stratum: controlled
+domain: finance
+generator_family: gan
+generator_tool: "CTGAN 0.10"
+generator_version: "0.10.0"
+provenance_confidence: documented
+modality: tabular
+task: classification
+target: income
+license: {name: CC BY 4.0, spdx: CC-BY-4.0, redistribute: true, fetch_scriptable: true}
+source:
+  urls: ["https://example.org/ctgan-adult-seed1.csv"]
+  sha256: {ctgan-adult-seed1.csv: "4444444444444444444444444444444444444444444444444444444444444444"}
+  retrieved: "2026-07-23"
+loader: {format: csv}
+transparency: {generator_described: true, generator_code_available: true, seed_reported: true, artifacts_disclosed: true}
+citation: "Illustrative scaffolding record."

@@ -1,0 +1,20 @@
+# Illustrative evaluation record (controlled stratum).
+id: controlled-ctgan-adult
+title: Controlled CTGAN Adult
+frame_stratum: controlled
+domain: finance
+generator_family: gan
+generator_tool: "CTGAN 0.10"
+generator_version: "0.10.0"
+provenance_confidence: documented
+modality: tabular
+task: classification
+target: income
+license: {name: CC BY 4.0, spdx: CC-BY-4.0, redistribute: true, fetch_scriptable: true}
+source:
+  urls: ["https://example.org/controlled-ctgan-adult.csv"]
+  sha256: {controlled-ctgan-adult.csv: "3333333333333333333333333333333333333333333333333333333333333333"}
+  retrieved: "2026-07-23"
+loader: {format: csv}
+transparency: {generator_described: true, generator_code_available: true, seed_reported: true, artifacts_disclosed: false}
+citation: "Illustrative scaffolding record."

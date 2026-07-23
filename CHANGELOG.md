@@ -8,6 +8,19 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
 ## [Unreleased]
 
 ### Added
+- WP5 Configuration system: the layered configuration subsystem (architecture
+  Section 8). Resolves the full precedence chain (packaged defaults <
+  `configs/default.yaml` < profile < environment `SAB_*` < CLI < per-dataset
+  overrides) with deep merging, complete per-value provenance, immutable version
+  pins (with recorded, flag-gated override events), pinned per-STO-version
+  detector thresholds shipped as package data, fail-closed schema validation, and
+  a reproducible configuration hash. Public API: `load_config`, `resolve_config`,
+  `config_hash`, `configuration_layers`, `load_profile`, `load_thresholds`,
+  `effective_configuration`. Thresholds are detector defaults that change the
+  configuration hash but never the benchmark semantics or gold labels; resolution
+  never depends on file-discovery order. Configuration documentation and a fully
+  tested (100% coverage) subsystem. The WP0 `configs/default.yaml` placeholder was
+  updated to the normative config-schema shape (a bug fix required for WP5).
 - WP4 Canonical serialization and content addressing: the foundational
   `canonical` module. Deterministic canonical JSON (UTF-8, sorted keys, compact
   separators, non-ASCII preserved, no BOM, NaN/Infinity rejected) and canonical

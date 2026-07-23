@@ -12,6 +12,7 @@ nav:
   - Domain model: domain-model.md
   - Schema system: schema-system.md
   - Canonicalization: canonicalization.md
+  - Configuration: configuration.md
   - Identity and versioning: identity.md
   - Future work: future-work.md
 markdown_extensions:

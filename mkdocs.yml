@@ -13,6 +13,7 @@ nav:
   - Schema system: schema-system.md
   - Canonicalization: canonicalization.md
   - Configuration: configuration.md
+  - Registry and corpus: registry.md
   - Identity and versioning: identity.md
   - Future work: future-work.md
 markdown_extensions:

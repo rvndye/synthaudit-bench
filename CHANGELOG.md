@@ -8,6 +8,21 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
 ## [Unreleased]
 
 ### Added
+- WP6 Registry and corpus management: the metadata-only `registry` subsystem
+  (architecture `registry` module). A deterministic, cached loader over
+  `registry/<corpus>/<id>.yaml` records that schema-validates each record, parses
+  it into a `DatasetRecord`, and assigns its corpus (census, evaluation,
+  controlled, conformance), evaluation split (public-dev, held-out), and content
+  hash; an immutable indexed `Registry` with lookup by id, corpus, split,
+  generator, domain, version, and hash; deterministic enumeration and filtering
+  across every metadata axis; and referential-integrity checking (unique ids,
+  corpus-versus-stratum consistency, split assignment, duplicate content hashes,
+  and schema/ontology version compatibility). Public API: `load_registry`,
+  `build_registry`, `validate_registry`, `referential_integrity`, `list_datasets`,
+  `get_dataset`, `filter_registry`, `registry_index`, `enumerate_corpus`. No data
+  downloading, CSV loading, or detector execution. Illustrative registry records
+  across the four corpora, registry documentation, and a fully tested (100%
+  coverage) subsystem.
 - WP5 Configuration system: the layered configuration subsystem (architecture
   Section 8). Resolves the full precedence chain (packaged defaults <
   `configs/default.yaml` < profile < environment `SAB_*` < CLI < per-dataset

@@ -8,6 +8,20 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
 ## [Unreleased]
 
 ### Added
+- WP4 Canonical serialization and content addressing: the foundational
+  `canonical` module. Deterministic canonical JSON (UTF-8, sorted keys, compact
+  separators, non-ASCII preserved, no BOM, NaN/Infinity rejected) and canonical
+  RFC 4180 CSV (UTF-8, header row, `\n` line endings, comma delimiter, no BOM,
+  specification Section 6.1.3); stable shortest-round-trip float formatting;
+  deterministic collection ordering (sets sorted, dictionary insertion order
+  never observed); lowercase-hex SHA-256 content addressing; and constant-time
+  hash and byte integrity verification. Public API: `canonical_json`,
+  `canonical_csv`, `format_float`, `canonicalize`, `sha256_bytes`,
+  `content_hash`, `verify_hash`, `verify_bytes`. Output is byte-identical across
+  operating systems and Python builds and reproduces the domain layer's identity
+  model exactly (every object's `content_hash()` equals the SHA-256 of its
+  canonical bytes). Canonicalization documentation and a fully tested (100%
+  coverage) module with frozen regression vectors.
 - WP3 Schema system: the validation boundary (architecture `schemas` module). The
   eight normative Draft 2020-12 JSON Schemas (artifact tuple, gold tuple, dataset
   record, report card, run manifest, metrics table, configuration, and the STO

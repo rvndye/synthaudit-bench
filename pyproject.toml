@@ -1,0 +1,110 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "synthaudit-bench"
+version = "0.0.1"
+description = "Reference-free structural trustworthiness benchmark for synthetic tabular datasets (SynthAudit-Bench)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Randy Erwin", email = "erwinrandy3@gmail.com" }]
+keywords = [
+  "synthetic data",
+  "benchmark",
+  "data auditing",
+  "benchmark validity",
+  "data-centric AI",
+  "trustworthiness",
+  "tabular data",
+]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+]
+dependencies = [
+  "numpy>=1.24",
+  "pandas>=2.0",
+  "jsonschema>=4.21",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+# Analysis and figures (Section 13 of the architecture: isolated behind an extra
+# so a detector-only install stays lean).
+analysis = ["scipy>=1.10", "scikit-learn>=1.3", "matplotlib>=3.7"]
+# The SynthAudit reference-implementation adapter. This is the ONLY route by
+# which SynthAudit may be imported (see the import-linter contract below).
+synthaudit = ["synthaudit==0.1.0"]
+docs = ["mkdocs-material>=9.5", "mkdocs>=1.6"]
+dev = [
+  "ruff>=0.6",
+  "mypy>=1.10",
+  "pytest>=8.0",
+  "pytest-cov>=5.0",
+  "hypothesis>=6.100",
+  "import-linter>=2.0",
+  "types-PyYAML>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/rvndye/synthaudit-bench"
+Repository = "https://github.com/rvndye/synthaudit-bench"
+Issues = "https://github.com/rvndye/synthaudit-bench/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+synthaudit_bench = ["py.typed"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src", "tests"]
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --cov=synthaudit_bench --cov-report=term-missing --cov-report=xml"
+markers = [
+  "integration: end-to-end pipeline tests",
+  "performance: runtime and memory budget tests",
+]
+
+[tool.coverage.run]
+source = ["synthaudit_bench"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+exclude_lines = ["pragma: no cover", "if __name__ == .__main__.:", "raise NotImplementedError"]
+
+# Architecture Section 3: enforce the one-way layering and the prime directive
+# that core never imports the SynthAudit reference implementation. When the
+# optional adapter lands (a later work package) its single import is added here
+# as an explicit `ignore_imports` exception, per the architecture.
+[tool.importlinter]
+root_package = "synthaudit_bench"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Core must not import the SynthAudit reference implementation"
+type = "forbidden"
+source_modules = ["synthaudit_bench"]
+forbidden_modules = ["synthaudit"]

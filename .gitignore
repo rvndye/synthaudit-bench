@@ -1,0 +1,32 @@
+# Generated pipeline outputs (reproducible; never committed)
+/results/
+/figures/
+
+# Fetched or archived corpus data (tracked via checksums / fetch stubs, not git)
+/corpus/**/data/
+*.parquet
+
+# Documentation site build
+/site/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Tooling caches and reports
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# OS / editor
+.DS_Store
+*.swp

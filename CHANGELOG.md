@@ -16,3 +16,10 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
   conformance suite.
 - Import contract enforcing that the core library never imports the SynthAudit
   reference implementation.
+- Pinned reference instrument (`synthaudit==0.1.0`) with a `uv.lock` lockfile and
+  committed self-test provenance (11/11 planted, recall 1.0, negative-control
+  1.0).
+- Frozen pre-registration `PROTOCOL.md` v1.0 (tag `protocol-v1.0`) with the
+  red-team fatal fixes and novelty positioning folded in.
+- Benchmark identity: `CITATION.cff`, the two-version policy, and the Zenodo DOI
+  reservation process (`docs/identity.md`).

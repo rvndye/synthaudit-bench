@@ -1,0 +1,11 @@
+# CI profile: a fast, tightly bounded run for continuous integration.
+#
+# Profiles override the default layer but MUST NOT change version pins (doing so
+# requires --allow-pin-override, and the override is recorded in provenance).
+# This profile touches only non-pin runtime settings.
+root_seed: 42
+limits:
+  wall_clock_s: 120
+  memory_mb: 2048
+jobs: 2
+log_level: "WARNING"

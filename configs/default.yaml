@@ -1,23 +1,33 @@
-# Global default configuration for SynthAudit-Bench.
+# Project default configuration for SynthAudit-Bench.
 #
-# Base layer of the layered configuration system
-# (defaults < file < profile < environment < CLI < per-dataset). This file is
-# consumed and validated by the `synthaudit_bench.config` module (implemented in
-# a later work package). The values below are the pinned identity and
-# determinism settings that make runs reproducible.
+# The `configs/default.yaml` layer of the layered configuration system
+# (packaged defaults < configs/default.yaml < profile < environment SAB_* < CLI
+# < per-dataset overrides). It is consumed and validated by the
+# `synthaudit_bench.config` module against the normative config schema, and its
+# resolved values determine the configuration hash recorded in run manifests.
 
-# Version pins. The benchmark and the software are versioned separately
-# (see GOVERNANCE.md).
-benchmark_version: "1.0.0"      # corpus + ontology + specification version
-sto_version: "1.0.0"            # Structural Trustworthiness Ontology version
-schema_version: "1.0.0"         # normative JSON Schema set version
-synthaudit_version: "0.1.0"     # pinned SynthAudit reference implementation (adapter only)
+# Version pins (immutable during a run unless --allow-pin-override is passed).
+pins:
+  bench_version: "1.0.0"        # corpus + ontology + specification version
+  sto_version: "1.0.0"          # Structural Trustworthiness Ontology version
+  synthaudit_version: "0.1.0"   # pinned SynthAudit reference implementation (adapter only)
+  thresholds_ref: "STO-1.0.0"   # detector operating points, keyed by STO version
+  schema_versions:              # normative JSON Schema set versions
+    dataset: "1.0.0"
+    artifact-tuple: "1.0.0"
+    gold-tuple: "1.0.0"
+    report-card: "1.0.0"
+    run-manifest: "1.0.0"
+    metrics: "1.0.0"
+    config: "1.0.0"
 
-# Determinism.
-seed: 42
+# Determinism: a single root seed; per-dataset seeds are derived from it.
+root_seed: 42
 
-# Per-dataset execution limits, enforced by the runner (later work package).
+# Per-dataset execution limits, enforced by the runner.
 limits:
-  wall_clock_seconds: 1800
+  wall_clock_s: 1800            # 30 minutes per dataset
   memory_mb: 8192
-  max_workers: null             # null => min(physical_cores - 2, 16)
+
+# Non-secret runtime settings.
+log_level: "INFO"

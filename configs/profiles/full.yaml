@@ -1,0 +1,8 @@
+# Full profile: a generously bounded run for the complete corpus.
+#
+# Overrides only non-pin runtime settings (see the CI profile for the pin rule).
+limits:
+  wall_clock_s: 7200
+  memory_mb: 32768
+jobs: 16
+log_level: "INFO"

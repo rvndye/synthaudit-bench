@@ -64,7 +64,7 @@ Issues = "https://github.com/rvndye/synthaudit-bench/issues"
 where = ["src"]
 
 [tool.setuptools.package-data]
-synthaudit_bench = ["py.typed"]
+synthaudit_bench = ["py.typed", "sto_data/*.json", "sto_data/*.csv"]
 
 [tool.ruff]
 line-length = 100

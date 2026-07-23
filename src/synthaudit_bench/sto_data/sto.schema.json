@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://synthaudit-bench.org/schemas/v1.0/sto.schema.json",
+  "title": "Structural Trustworthiness Ontology register",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sto_version",
+    "released",
+    "status",
+    "title",
+    "groups",
+    "dispositions",
+    "roles",
+    "role_precedence",
+    "reserved_output_symbols",
+    "compatibility",
+    "extension_policy",
+    "classes"
+  ],
+  "properties": {
+    "sto_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+    },
+    "released": { "type": "string", "format": "date" },
+    "status": { "type": "string", "enum": ["normative", "draft"] },
+    "title": { "type": "string" },
+    "groups": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "string" }
+    },
+    "dispositions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_leakage",
+        "structural_constraint",
+        "redundancy",
+        "not_applicable"
+      ],
+      "properties": {
+        "target_leakage": { "type": "string" },
+        "structural_constraint": { "type": "string" },
+        "redundancy": { "type": "string" },
+        "not_applicable": { "type": "string" }
+      }
+    },
+    "roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target",
+        "input",
+        "derived_deterministic",
+        "near_deterministic",
+        "label_component",
+        "leaky_feature",
+        "duplicate",
+        "constant",
+        "identifier",
+        "datetime",
+        "no_signal"
+      ],
+      "properties": {
+        "target": { "type": "string" },
+        "input": { "type": "string" },
+        "derived_deterministic": { "type": "string" },
+        "near_deterministic": { "type": "string" },
+        "label_component": { "type": "string" },
+        "leaky_feature": { "type": "string" },
+        "duplicate": { "type": "string" },
+        "constant": { "type": "string" },
+        "identifier": { "type": "string" },
+        "datetime": { "type": "string" },
+        "no_signal": { "type": "string" }
+      }
+    },
+    "role_precedence": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 11,
+      "maxItems": 11,
+      "uniqueItems": true
+    },
+    "reserved_output_symbols": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "compatibility": { "type": "string" },
+    "extension_policy": { "type": "string" },
+    "classes": {
+      "type": "array",
+      "minItems": 16,
+      "items": { "$ref": "#/$defs/classDef" }
+    }
+  },
+  "$defs": {
+    "classDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "group",
+        "gold_type",
+        "definition",
+        "scope",
+        "inclusion_criteria",
+        "exclusion_criteria",
+        "example",
+        "counterexample",
+        "relationships",
+        "operating_points",
+        "deprecation"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^STO-[A-Z][0-9]{2}$" },
+        "name": { "type": "string" },
+        "group": { "type": "string", "enum": ["A", "S", "R", "P"] },
+        "gold_type": { "type": "string", "enum": ["objective", "adjudicated"] },
+        "definition": { "type": "string" },
+        "scope": { "type": "string" },
+        "inclusion_criteria": { "type": "string" },
+        "exclusion_criteria": { "type": "string" },
+        "example": { "type": "string" },
+        "counterexample": { "type": "string" },
+        "relationships": { "type": "array", "items": { "type": "string" } },
+        "operating_points": { "type": "array", "items": { "type": "string" } },
+        "deprecation": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["since_version", "replaced_by", "reason"],
+              "properties": {
+                "since_version": { "type": "string" },
+                "replaced_by": { "type": ["string", "null"] },
+                "reason": { "type": "string" }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

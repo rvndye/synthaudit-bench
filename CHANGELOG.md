@@ -8,6 +8,18 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
 ## [Unreleased]
 
 ### Added
+- WP2 Domain model: the immutable domain layer (architecture Section 4) — the
+  dataset metadata record, artifact and gold tuples, the loaded dataset object,
+  the per-dataset audit result, the standardized report card, the run manifest,
+  the scoring metrics table, the declarative figure specification, and the
+  resolved configuration, together with their embedded value objects and metadata
+  enums. Every object is a frozen, immutable dataclass with deterministic
+  canonical serialization and content-addressed SHA-256 identity; objects that
+  carry volatile run metadata (audit-result timing, report-card provenance,
+  manifest timestamps) exclude it from identity so equal content hashes
+  identically. The layer performs no IO, schema validation, scoring, or detector
+  logic and never imports the reference implementation. Domain-model documentation
+  and a fully tested (100% coverage) domain layer.
 - WP1 Structural Trustworthiness Ontology (STO) v1.0: the normative class register
   (16 classes across groups A/S/R/P) and its Draft 2020-12 schema, shipped as
   package data; the immutable ontology domain model; a semantic-version value

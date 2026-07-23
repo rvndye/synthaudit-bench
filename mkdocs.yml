@@ -9,6 +9,7 @@ theme:
 nav:
   - Home: index.md
   - Ontology (STO): ontology.md
+  - Domain model: domain-model.md
   - Identity and versioning: identity.md
   - Future work: future-work.md
 markdown_extensions:

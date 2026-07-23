@@ -1,0 +1,31 @@
+name: Compliance
+
+# Runs the specification compliance suite (CS-1..CS-7). The suite is populated in
+# the release work package; until then this workflow reports an empty suite as a
+# clean pass. Manual and tag triggered so it never gates ordinary commits.
+on:
+  workflow_dispatch:
+  push:
+    tags: ["bench-v*"]
+
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: python -m pip install -e ".[dev]"
+      - name: Compliance suite
+        run: |
+          set +e
+          python -m pytest tests/conformance -q
+          code=$?
+          set -e
+          if [ "$code" = "5" ]; then
+            echo "No conformance tests present yet (populated in the release work package)."
+            exit 0
+          fi
+          exit "$code"

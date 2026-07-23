@@ -1,0 +1,31 @@
+# Pre-commit hooks mirror the CI gate so problems are caught before commit.
+# Install with: pre-commit install
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy (strict)
+        entry: python -m mypy
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: import-linter
+        name: import-linter
+        entry: lint-imports
+        language: system
+        pass_filenames: false
+        files: ^src/

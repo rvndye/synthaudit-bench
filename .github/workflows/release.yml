@@ -1,0 +1,33 @@
+name: Release
+
+# Full release automation (bundle, Croissant export, Zenodo DOI, strict docs) is
+# added in the release work package. At this stage a tag runs the quality gate
+# and builds the distribution, which is the minimum a tag must satisfy.
+on:
+  push:
+    tags: ["v*", "bench-v*"]
+  workflow_dispatch:
+
+jobs:
+  gate-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: python -m pip install -e ".[dev]" build
+      - name: Quality gate
+        run: |
+          ruff check .
+          ruff format --check .
+          python -m mypy
+          lint-imports
+          python -m pytest
+      - name: Build distribution
+        run: python -m build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*

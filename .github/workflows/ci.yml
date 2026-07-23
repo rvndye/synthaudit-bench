@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install
+        run: python -m pip install -e ".[dev]"
+      - name: Lint (ruff)
+        run: ruff check .
+      - name: Format check (ruff)
+        run: ruff format --check .
+      - name: Type check (mypy, strict)
+        run: python -m mypy
+      - name: Import contracts (import-linter)
+        run: lint-imports
+      - name: Tests and coverage
+        run: python -m pytest
+
+  schema-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate normative JSON artifacts are well-formed
+        run: |
+          python - <<'PY'
+          import glob
+          import json
+
+          files = glob.glob("schemas/**/*.json", recursive=True)
+          files += glob.glob("sto/**/*.json", recursive=True)
+          files += glob.glob("conformance/**/*.json", recursive=True)
+          for f in files:
+              with open(f) as fh:
+                  json.load(fh)
+          print(f"validated {len(files)} JSON artifact(s)")
+          PY

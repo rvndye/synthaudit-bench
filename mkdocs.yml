@@ -1,0 +1,16 @@
+site_name: SynthAudit-Bench
+site_description: Reference-free structural trustworthiness benchmark for synthetic tabular datasets
+repo_url: https://github.com/rvndye/synthaudit-bench
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - content.code.copy
+nav:
+  - Home: index.md
+  - Future work: future-work.md
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.superfences

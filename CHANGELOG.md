@@ -8,6 +8,19 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
 ## [Unreleased]
 
 ### Added
+- WP3 Schema system: the validation boundary (architecture `schemas` module). The
+  eight normative Draft 2020-12 JSON Schemas (artifact tuple, gold tuple, dataset
+  record, report card, run manifest, metrics table, configuration, and the STO
+  register schema) shipped as package data; an immutable, cached schema registry
+  with deterministic loading, cross-schema `$ref` resolution, additive-minor
+  version resolution and compatibility checks, and schema discovery; a stable
+  public API (`load_schema`, `validate_instance`, `get_schema`, `list_schemas`,
+  `schema_version`, `supported_versions`); and structured validation errors
+  carrying the schema id, JSON pointer, offending value, and explanation.
+  Validation never mutates its input; every domain object's serialization
+  validates against its schema. The WP1 low-level primitives (`validate`,
+  `check_schema`) are preserved unchanged as the layer this builds on.
+  Schema-system documentation and a fully tested (100% coverage) schema layer.
 - WP2 Domain model: the immutable domain layer (architecture Section 4) — the
   dataset metadata record, artifact and gold tuples, the loaded dataset object,
   the per-dataset audit result, the standardized report card, the run manifest,

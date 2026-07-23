@@ -1,0 +1,13 @@
+{
+  "instrument": "synthaudit",
+  "pinned_version": "0.1.0",
+  "command": "synthaudit selftest --extended --quiet",
+  "recorded_utc": "2026-07-23T17:52:45Z",
+  "result": {
+    "planted_detected": "11/11",
+    "recall": 1.0,
+    "negative_control_pass": 1.0
+  },
+  "gate": "WP0 issue 0.3: quality gate requires recall == 1.0 and negative_control_pass == 1.0",
+  "status": "pass"
+}

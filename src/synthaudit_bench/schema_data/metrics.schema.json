@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://synthaudit-bench.org/schemas/v1.0/metrics.json",
+  "title": "SynthAudit-Bench Metrics Table",
+  "description": "The scored metrics table for one split (specification Section 5.6).",
+  "version": "1.0.0",
+  "type": "object",
+  "required": [
+    "split", "detection", "disposition_aware", "coverage", "per_class",
+    "per_disposition", "per_dataset"
+  ],
+  "$defs": {
+    "score": {
+      "type": "object",
+      "required": ["precision", "recall", "f1", "tp", "fp", "fn"],
+      "properties": {
+        "precision": {"type": "number"},
+        "recall": {"type": "number"},
+        "f1": {"type": "number"},
+        "tp": {"type": "integer", "minimum": 0},
+        "fp": {"type": "integer", "minimum": 0},
+        "fn": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "aggregate": {
+      "type": "object",
+      "required": ["micro", "macro_class_f1", "macro_dataset_f1"],
+      "properties": {
+        "micro": {"$ref": "#/$defs/score"},
+        "macro_class_f1": {"type": "number"},
+        "macro_dataset_f1": {"type": "number"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "split": {"type": "string"},
+    "detection": {"$ref": "#/$defs/aggregate"},
+    "disposition_aware": {"$ref": "#/$defs/aggregate"},
+    "coverage": {
+      "type": "object",
+      "required": ["abstain_hit", "abstain_other", "gold_type_recall"],
+      "properties": {
+        "abstain_hit": {"type": "integer", "minimum": 0},
+        "abstain_other": {"type": "integer", "minimum": 0},
+        "gold_type_recall": {"type": "object", "additionalProperties": {"type": "number"}},
+        "objective_gold_recall": {"type": "number"},
+        "adjudicated_gold_recall": {"type": "number"}
+      },
+      "additionalProperties": false
+    },
+    "per_class": {"type": "object", "additionalProperties": {"$ref": "#/$defs/score"}},
+    "per_disposition": {"type": "object", "additionalProperties": {"$ref": "#/$defs/score"}},
+    "per_dataset": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["dataset_id", "detection", "disposition_aware"],
+        "properties": {
+          "dataset_id": {"type": "string"},
+          "detection": {"$ref": "#/$defs/score"},
+          "disposition_aware": {"$ref": "#/$defs/score"},
+          "partial_credit": {"$ref": "#/$defs/score"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "partial_credit": {"$ref": "#/$defs/aggregate"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://synthaudit-bench.org/schemas/v1.0/report-card.json",
+  "title": "SynthAudit-Bench Report Card",
+  "description": "A standardized structural-trustworthiness report card for one dataset (specification Section 8, Appendix C).",
+  "version": "1.0.0",
+  "type": "object",
+  "required": [
+    "schema_version", "dataset_id", "dataset_sha256", "sto_version",
+    "implementation", "target", "task", "artifacts", "provenance"
+  ],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "dataset_id": {"type": "string"},
+    "dataset_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "sto_version": {"type": "string"},
+    "implementation": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": {"type": "string"},
+        "version": {"type": "string"},
+        "reference_free": {"type": "boolean"},
+        "capabilities": {"type": "array", "items": {"type": "string"}},
+        "probe_family": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "target": {"type": ["string", "null"]},
+    "task": {"enum": ["classification", "regression", "none"]},
+    "artifacts": {
+      "type": "array",
+      "items": {"$ref": "artifact-tuple.json"}
+    },
+    "column_roles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "enum": [
+          "target", "input", "derived_deterministic", "near_deterministic",
+          "label_component", "leaky_feature", "duplicate", "constant",
+          "identifier", "datetime", "no_signal"
+        ]
+      }
+    },
+    "dispositions_summary": {
+      "type": "object",
+      "additionalProperties": {"type": "integer"}
+    },
+    "pillars": {
+      "type": "object",
+      "properties": {
+        "L": {"type": ["number", "null"]},
+        "F": {"type": ["number", "null"]},
+        "H": {"type": ["number", "null"]},
+        "R": {"type": ["number", "null"]},
+        "I": {"type": ["number", "null"]},
+        "T": {"type": ["number", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "bti": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "grade": {"type": ["string", "null"], "enum": ["A", "B", "C", "D", "F", null]},
+    "probe_family": {"type": ["string", "null"]},
+    "recommendations": {
+      "type": "object",
+      "properties": {
+        "drop": {"type": "array", "items": {"type": "string"}},
+        "quarantine": {"type": "array", "items": {"type": "string"}},
+        "honest_feature_view": {"type": "array", "items": {"type": "string"}},
+        "protocol_warnings": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["run_timestamp", "seed", "config_hash"],
+      "properties": {
+        "run_timestamp": {"type": "string"},
+        "seed": {"type": "integer"},
+        "config_hash": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

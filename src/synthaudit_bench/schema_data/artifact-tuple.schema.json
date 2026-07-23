@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://synthaudit-bench.org/schemas/v1.0/artifact-tuple.json",
+  "title": "SynthAudit-Bench Artifact Tuple",
+  "description": "One predicted artifact tuple (specification Section 5.3, Appendix A).",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["support", "class"],
+  "properties": {
+    "support": {
+      "oneOf": [
+        {"type": "array", "items": {"type": "string"}, "uniqueItems": true, "minItems": 1},
+        {"type": "string", "enum": ["<ROWS>", "<TABLE>"]}
+      ]
+    },
+    "class": {"type": "string", "pattern": "^(STO-[A-Z][0-9]{2}|STO-X00|ABSTAIN)$"},
+    "disposition": {
+      "type": "string",
+      "enum": ["target_leakage", "structural_constraint", "redundancy", "not_applicable"]
+    },
+    "severity": {"type": "string", "enum": ["critical", "high", "medium", "low"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "evidence": {"type": ["object", "string"]}
+  },
+  "additionalProperties": false
+}

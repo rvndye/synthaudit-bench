@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://synthaudit-bench.org/schemas/v1.0/dataset.json",
+  "title": "SynthAudit-Bench Dataset Metadata Record",
+  "description": "A dataset metadata record (specification Section 7, Appendix B).",
+  "version": "1.0.0",
+  "type": "object",
+  "required": [
+    "id", "title", "frame_stratum", "domain", "generator_family",
+    "provenance_confidence", "modality", "task", "target", "license", "source",
+    "loader", "transparency", "citation"
+  ],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+    "title": {"type": "string"},
+    "frame_stratum": {"enum": ["census", "planted", "controlled", "adjudicated_real"]},
+    "domain": {"type": "string"},
+    "secondary_domains": {"type": "array", "items": {"type": "string"}},
+    "generator_family": {"type": "string"},
+    "generator_tool": {"type": ["string", "null"]},
+    "provenance_confidence": {"enum": ["documented", "inferred", "unknown"]},
+    "generation_date": {"type": ["string", "null"], "format": "date"},
+    "generator_version": {"type": ["string", "null"]},
+    "modality": {"const": "tabular"},
+    "task": {"enum": ["classification", "regression", "none"]},
+    "target": {"type": ["string", "null"]},
+    "secondary_targets": {"type": "array", "items": {"type": "string"}},
+    "test_split": {"type": ["string", "null"]},
+    "license": {
+      "type": "object",
+      "required": ["name", "redistribute", "fetch_scriptable"],
+      "properties": {
+        "name": {"type": "string"},
+        "spdx": {"type": ["string", "null"]},
+        "redistribute": {"type": "boolean"},
+        "fetch_scriptable": {"type": "boolean"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["urls", "sha256", "retrieved"],
+      "properties": {
+        "urls": {"type": "array", "items": {"type": "string"}},
+        "sha256": {"type": "object"},
+        "retrieved": {"type": "string", "format": "date"}
+      }
+    },
+    "loader": {
+      "type": "object",
+      "required": ["format"],
+      "properties": {
+        "format": {"type": "string"},
+        "header": {},
+        "columns_ref": {},
+        "options": {}
+      }
+    },
+    "transparency": {
+      "type": "object",
+      "required": [
+        "generator_described", "generator_code_available", "seed_reported",
+        "artifacts_disclosed"
+      ],
+      "properties": {
+        "generator_described": {"type": "boolean"},
+        "generator_code_available": {"type": "boolean"},
+        "seed_reported": {"type": "boolean"},
+        "artifacts_disclosed": {"type": "boolean"}
+      }
+    },
+    "citation": {"type": "string"},
+    "notes": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

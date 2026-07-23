@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://synthaudit-bench.org/schemas/v1.0/gold-tuple.json",
+  "title": "SynthAudit-Bench Gold Tuple",
+  "description": "One ground-truth gold tuple (specification Section 5.4, Appendix A). Uses the artifact-tuple shape with class/disposition replaced by their acceptable sets, an added gold_type, an optional flag, and required evidence.",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["support", "classes", "dispositions", "gold_type", "evidence"],
+  "properties": {
+    "support": {
+      "oneOf": [
+        {"type": "array", "items": {"type": "string"}, "uniqueItems": true, "minItems": 1},
+        {"type": "string", "enum": ["<ROWS>", "<TABLE>"]}
+      ]
+    },
+    "classes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^STO-[A-Z][0-9]{2}$", "not": {"const": "STO-X00"}}
+    },
+    "dispositions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["target_leakage", "structural_constraint", "redundancy", "not_applicable"]
+      }
+    },
+    "gold_type": {"type": "string", "enum": ["objective", "adjudicated"]},
+    "optional": {"type": "boolean"},
+    "evidence": {"type": ["object", "string"]}
+  },
+  "additionalProperties": false
+}

@@ -8,6 +8,7 @@ theme:
     - content.code.copy
 nav:
   - Home: index.md
+  - Ontology (STO): ontology.md
   - Identity and versioning: identity.md
   - Future work: future-work.md
 markdown_extensions:

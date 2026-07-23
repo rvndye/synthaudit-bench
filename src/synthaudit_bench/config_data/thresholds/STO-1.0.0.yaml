@@ -1,0 +1,47 @@
+# Recommended detector operating points for STO v1.0 (specification Appendix D).
+#
+# These are DETECTOR DEFAULTS ONLY. They are not ground truth (spec Section 4.1):
+# changing a threshold changes a detector's behavior but never the gold labels or
+# the benchmark semantics. Any change is a configuration-hash change and is
+# therefore auditable. This file is pinned per STO version and loaded into the
+# resolved configuration under the `thresholds` key.
+sto_version: "1.0.0"
+
+# D.1 detection tolerances.
+detection:
+  tau_exact: 0.999999999      # 1 - 1e-9; exact-identity coefficient of determination
+  tau_near: 0.995             # near band
+  tau_fd: 0.005               # max g3 functional-dependency violation rate
+  tau_modal: 0.98             # functional-dependency dependent non-degeneracy
+  tau_rule: 0.999             # rule fidelity
+  tau_dup: 0.9999             # duplicate correlation
+  tau_mincount: 20            # minimum minority count for A07/P01 slices
+  tau_duprow: 0.01            # duplicate-row fraction
+  tau_lattice: 0.000001       # 1e-6; lattice integrality tolerance
+  tau_uniform: 0.02           # KS statistic for uniform marginals
+  tau_ac: 0.5                 # lag-1 autocorrelation magnitude
+  tau_single: 0.95            # single-feature dominance (baseline-relative)
+  tau_single_critical: 0.99   # single-feature dominance for `critical`
+  tau_det: 0.98               # out-of-sample residual near-determinism
+
+# Matching (partial-credit metric only, spec 5.6.4).
+matching:
+  tau_jaccard: 0.5
+
+# D.3 Benchmark Trustworthiness Index parameters.
+bti:
+  weights:
+    L: 0.30
+    F: 0.20
+    H: 0.20
+    R: 0.15
+    I: 0.15
+    T: 0.15
+  s0: 0.90
+  saturation: 0.995
+  floor_epsilon: 0.01
+  grade_bands:
+    A: 0.80
+    B: 0.65
+    C: 0.50
+    D: 0.35

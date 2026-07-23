@@ -1,0 +1,18 @@
+# Illustrative conformance-suite record (planted fixture with published gold).
+id: cs-target-leak-01
+title: Conformance Target Leakage 01
+frame_stratum: planted
+domain: synthetic
+generator_family: rule-based
+provenance_confidence: documented
+modality: tabular
+task: classification
+target: label
+license: {name: CC0 1.0, spdx: CC0-1.0, redistribute: true, fetch_scriptable: true}
+source:
+  urls: ["https://example.org/cs-target-leak-01.csv"]
+  sha256: {cs-target-leak-01.csv: "5555555555555555555555555555555555555555555555555555555555555555"}
+  retrieved: "2026-07-23"
+loader: {format: csv}
+transparency: {generator_described: true, generator_code_available: true, seed_reported: true, artifacts_disclosed: true}
+citation: "Illustrative scaffolding record."

@@ -1,0 +1,42 @@
+# Dataset metadata record TEMPLATE (specification Section 7; validates against
+# the frozen dataset.schema.json). Copy to registry/<corpus>/<id>.yaml and replace
+# every placeholder. Placeholders are schema-valid so the template validates as-is.
+# Required fields are marked (R); optional fields (O) may be deleted if unused.
+
+id: example-dataset-id                 # (R) lowercase kebab-case, unique, permanent
+title: Example Dataset Title           # (R)
+frame_stratum: planted                 # (R) census | planted | controlled | adjudicated_real
+domain: synthetic                      # (R) controlled domain vocabulary (see controlled-vocabularies.md)
+secondary_domains: []                  # (O) array of domain terms
+generator_family: rule-based           # (R) frozen enum: physics-simulator | agent-based | rule-based |
+                                       #     statistical | resampling | gan | vae | diffusion | llm | unknown
+generator_tool: null                   # (O) e.g. "CTGAN 0.10"
+generator_version: null                # (O)
+generation_date: null                  # (O) ISO-8601 date
+provenance_confidence: documented      # (R) documented | inferred | unknown
+modality: tabular                      # (R) const: tabular
+task: classification                   # (R) classification | regression | none
+target: label                          # (R) target column name, or null
+secondary_targets: []                  # (O) array of column names
+test_split: null                       # (O) companion table reference for STO-R02
+license:                               # (R)
+  name: CC0 1.0
+  spdx: CC0-1.0
+  redistribute: true                   # false -> participates as a fetch stub
+  fetch_scriptable: true
+source:                                # (R)
+  urls: ["https://example.org/example-dataset-id.csv"]
+  sha256:                              # map filename -> 64-hex canonical CSV hash
+    example-dataset-id.csv: "0000000000000000000000000000000000000000000000000000000000000000"
+  retrieved: "2026-01-01"              # ISO-8601 retrieval date
+loader:                                # (R) declarative parse spec
+  format: csv
+  header: true
+  options: {}
+transparency:                          # (R) four disclosure booleans (feed the T pillar)
+  generator_described: true
+  generator_code_available: true
+  seed_reported: true
+  artifacts_disclosed: true
+citation: "Replace with the dataset's citation or provenance statement."  # (R)
+notes: null                            # (O)

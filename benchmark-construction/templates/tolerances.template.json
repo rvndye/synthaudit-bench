@@ -1,0 +1,6 @@
+{
+  "objective_recall": 1.0,
+  "objective_precision": 1.0,
+  "adjudicated_recall": 0.8,
+  "adjudicated_precision": 0.8
+}

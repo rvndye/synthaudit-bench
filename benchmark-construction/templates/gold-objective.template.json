@@ -1,0 +1,24 @@
+[
+  {
+    "support": ["column_one"],
+    "classes": ["STO-S02"],
+    "dispositions": ["not_applicable"],
+    "gold_type": "objective",
+    "evidence": "column_one has a single non-missing value in the released file (constant column). Machine-verified on the released bytes.",
+    "optional": false
+  },
+  {
+    "support": ["column_a", "column_b"],
+    "classes": ["STO-A08"],
+    "dispositions": ["redundancy"],
+    "gold_type": "objective",
+    "evidence": "column_a and column_b are byte-identical (duplicate column). Machine-verified on the released bytes."
+  },
+  {
+    "support": "<ROWS>",
+    "classes": ["STO-S01"],
+    "dispositions": ["redundancy"],
+    "gold_type": "objective",
+    "evidence": "N rows are exact duplicates (duplicate rows). Machine-verified on the released bytes."
+  }
+]

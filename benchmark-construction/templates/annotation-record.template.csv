@@ -1,0 +1,5 @@
+dataset_id,annotator_id,support,candidate_class,disposition,present,confidence,evidence
+EXAMPLE-dataset,annotator-A,"derived_label|input_one|input_two",STO-A06,target_leakage,yes,high,"shallow rule reproduces derived_label; removes most majority-class error"
+EXAMPLE-dataset,annotator-A,dominant_feature,STO-P01,target_leakage,yes,medium,"single-feature baseline-relative score near 1.0 on non-degenerate slice"
+EXAMPLE-dataset,annotator-B,"derived_label|input_one|input_two",STO-A06,target_leakage,yes,high,"same rule found independently"
+EXAMPLE-dataset,annotator-B,dominant_feature,STO-P01,target_leakage,no,low,"lift over baseline judged negligible"

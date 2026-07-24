@@ -8,6 +8,22 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
 ## [Unreleased]
 
 ### Added
+- WP12 Release, compliance, CLI, and final integration: the `bench` command-line
+  interface (`synthaudit_bench.cli.main`, a console entry point) that runs the whole
+  pipeline end to end with the architecture's exit codes (version, registry,
+  validate, audit, match, report, compliance, release); the compliance suite
+  (`run_compliance`, CS-1..CS-7 per specification Section 11, emitting a hash-stamped
+  `ComplianceRecord`); the release layer (`version_report`, `build_release_manifest`,
+  `dataset_manifest_entry`, `check_version_bump`) producing the Section 6.1.5
+  `MANIFEST.json` and enforcing the Section 12.2 semver policy; and a reference-free,
+  pandas-only `StructuralBaselineDetector` for the exactly-determinable objective
+  classes (STO-S02, STO-A08, STO-S01), registered through the
+  `synthaudit_bench.detectors` entry-point group, that makes the benchmark runnable
+  and proves the task is non-trivial without importing any reference implementation.
+  Necessary WP0 edit (documented): `pyproject.toml` gains the `bench` console script
+  and the baseline detector entry point. CLI-and-release documentation and a fully
+  tested (100% coverage) subsystem. With WP12 the benchmark is executable entirely
+  through the public CLI.
 - WP11 Aggregation, report cards, and statistics: the pure `report` subsystem
   (architecture L2). Report-card generation (`build_report_card`) with the
   Appendix D.3 Benchmark Trustworthiness Index and grade bands computed exactly

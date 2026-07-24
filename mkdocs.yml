@@ -14,6 +14,7 @@ nav:
   - Canonicalization: canonicalization.md
   - Configuration: configuration.md
   - Registry and corpus: registry.md
+  - Acquisition and loading: acquisition-loading.md
   - Identity and versioning: identity.md
   - Future work: future-work.md
 markdown_extensions:

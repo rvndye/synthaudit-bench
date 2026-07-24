@@ -8,6 +8,27 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
 ## [Unreleased]
 
 ### Added
+- WP7 Data acquisition and dataset loading: the `acquire` and `load` modules, the
+  benchmark's ingestion layer. `acquire` is the only network-capable component and
+  ships no network code: scripted fetching runs solely through an injected
+  `Fetcher` (`(url) -> bytes`), and with none it is a pure local-cache-and-verify
+  operation. It manages a deterministic content-addressed cache, enforces the
+  license gate (non-scriptable licenses yield `FetchStub`s per Section 6.1.4),
+  and fails closed on any SHA-256 mismatch (a bad fetch is deleted, a rotted cache
+  entry is never returned verified). `load` reads the canonical CSV form (Section
+  6.1.3) faithfully into an immutable `DatasetObject`, so its content hash equals
+  the manifest instance identity; loads the companion split `T'` when `test_split`
+  is set; and exposes analysis-only utilities that never mutate the identity-bearing
+  table: automatic logical-type inference (Appendix D.5), missing-marker
+  normalization (Section 5.2 N2), and below-minimum detection. `verify_dataset` is
+  the comprehensive fail-closed ingestion gate (schema, per-file checksums,
+  canonical parse, target existence, companion validity, and content identity).
+  Public API: `acquire_dataset`, `fetch_stub`, `verify_source_checksums`,
+  `cache_path`, `load_dataset`, `build_dataset_object`, `load_companion_split`,
+  `verify_dataset`, `infer_column_types`, `normalize_missing_values`,
+  `below_minimum`. Loading is reference-free, detector-independent, and performs no
+  external access. Acquisition-and-loading documentation and a fully tested (100%
+  coverage) subsystem.
 - WP6 Registry and corpus management: the metadata-only `registry` subsystem
   (architecture `registry` module). A deterministic, cached loader over
   `registry/<corpus>/<id>.yaml` records that schema-validates each record, parses

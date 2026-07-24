@@ -8,6 +8,31 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
 ## [Unreleased]
 
 ### Added
+- WP8 Detector protocol and normalization: the `detector` subsystem, the
+  tool-agnostic seam any structural auditing system implements to be scored. A
+  stable `Detector` protocol (`capabilities` + `detect`, with optional
+  `setup`/`teardown` lifecycle hooks) that operates only on immutable
+  `DatasetObject`s, is reference-free and deterministic, and never mutates
+  benchmark state; an immutable `DetectorCapabilities` model (supported STO
+  categories, modalities, logical types, required benchmark and ontology versions,
+  optional and experimental capabilities) with pre-execution capability
+  negotiation. Registration and entry-point discovery (`synthaudit_bench.detectors`
+  group) return immutable `DetectorRegistry` values with lazy, isolation-safe
+  loading (a broken plugin is recorded and skipped). `run_detector` is the isolated
+  task boundary: it validates capabilities, honors the below-minimum rule, enforces
+  an optional timeout, verifies the dataset was not mutated, and normalizes
+  findings, turning every failure (capability, timeout `resource`, `runtime`,
+  `invalid_findings`) into a structured `ErrorRecord` so one detector's failure
+  never terminates a batch. The normalization pipeline resolves native identifiers
+  to STO classes (exact/alias/deprecated/unknown-to-`STO-X00`), canonicalizes
+  support, infers dispositions (Section 4.3), normalizes confidence and severity,
+  collapses duplicates, orders deterministically, and validates every tuple against
+  the normative tuple schema. Public API: `register_detector`, `discover_detectors`,
+  `validate_detector`, `run_detector`, `normalize_findings`, `map_to_ontology`,
+  `normalize_confidence`, `detector_capabilities`, `detector_metadata`. The core
+  imports no specific detector; the reference adapter is an optional extra using
+  this same protocol. Detector-protocol documentation with a minimal-plugin example
+  and a fully tested (100% coverage) subsystem.
 - WP7 Data acquisition and dataset loading: the `acquire` and `load` modules, the
   benchmark's ingestion layer. `acquire` is the only network-capable component and
   ships no network code: scripted fetching runs solely through an injected

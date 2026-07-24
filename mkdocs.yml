@@ -15,6 +15,7 @@ nav:
   - Configuration: configuration.md
   - Registry and corpus: registry.md
   - Acquisition and loading: acquisition-loading.md
+  - Detector protocol: detector-protocol.md
   - Identity and versioning: identity.md
   - Future work: future-work.md
 markdown_extensions:

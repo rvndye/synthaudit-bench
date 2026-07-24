@@ -21,6 +21,7 @@ nav:
   - Reporting and report cards: reporting.md
   - CLI, compliance, and release: cli-release.md
   - Identity and versioning: identity.md
+  - Instrument pin (provenance): provenance/instrument-pin.md
   - Future work: future-work.md
 markdown_extensions:
   - admonition

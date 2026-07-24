@@ -7,7 +7,24 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
 
 ## [Unreleased]
 
+### Fixed
+- Release-candidate remediation (v1.0.0-rc1) of the independent pre-release audit.
+  The runner isolates detector `capabilities()` discovery so a failing detector can
+  no longer terminate a batch (fail-open preserved, per-dataset `init` errors
+  recorded); `build_report` now carries the standard figure specifications alongside
+  every tidy table they consume (`findings`, `per_dataset_metrics`) so no figure
+  references a table the report does not emit; the `bench` CLI is reconciled with
+  architecture Section 10 (thin `fetch` and `reproduce` wrappers, exit codes 3/4/7,
+  and integrity/duplicate-id handling on `audit`); the F pillar is clamped to
+  `[0, 1]`; `plan_run` rejects duplicate dataset ids with a `RunnerError`; the
+  execution context's thresholds are immutable; and `bench match`/`report` exit 2 on
+  an empty audits directory. No benchmark semantics, scoring, ontology, schemas,
+  detector protocol, metrics, or report semantics changed.
+
 ### Added
+- Runnable, verified examples under `examples/` (an end-to-end CLI pipeline, a
+  minimal detector plugin, and a configuration walk-through); the CLI's thin
+  `bench fetch` and `bench reproduce` wrappers; and `report.per_dataset_metric_rows`.
 - WP12 Release, compliance, CLI, and final integration: the `bench` command-line
   interface (`synthaudit_bench.cli.main`, a console entry point) that runs the whole
   pipeline end to end with the architecture's exit codes (version, registry,

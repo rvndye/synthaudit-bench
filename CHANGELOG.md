@@ -8,6 +8,20 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
 ## [Unreleased]
 
 ### Added
+- WP11 Aggregation, report cards, and statistics: the pure `report` subsystem
+  (architecture L2). Report-card generation (`build_report_card`) with the
+  Appendix D.3 Benchmark Trustworthiness Index and grade bands computed exactly
+  (weighted geometric mean over the available pillars); the T and F pillars are
+  computed from the disclosure booleans and column roles, and the learned/statistical
+  pillars L, H, R, I are supplied as `PillarInputs` (null when not provided, so this
+  layer never runs a learner or invents a statistic). Deterministic tidy tables and
+  summaries (`finding_rows`, `dataset_rows`, `per_dataset_summary`,
+  `per_detector_summary`, `sto_summary`, `benchmark_summary`); exact frame-proportion
+  statistics with no sampling confidence intervals (Blueprint RT-F1) and an
+  optional caller-supplied measurement-error bound; declarative `FigureSpec` builders;
+  and JSON and Markdown report rendering (`build_report`, `render_json_report`,
+  `render_markdown_report`). Reporting documentation and a fully tested (100%
+  coverage) subsystem.
 - WP10 Runner and execution engine: the `runner` subsystem (architecture Section
   7). `run_benchmark` executes a detector over a set of datasets with a fixed
   sorted-by-id dispatch order and deterministically derived per-dataset seeds

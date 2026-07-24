@@ -8,6 +8,27 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
 ## [Unreleased]
 
 ### Added
+- WP9 Gold matching and metrics: the pure `gold` subsystem (architecture `gold`
+  module). Loads gold tuples with boundary schema validation (`load_gold`,
+  `load_gold_dir`, `validate_gold`); matches predictions against gold by the
+  deterministic maximum-cardinality bipartite matching of specification Section
+  5.5 (`match`, with detection, disposition-aware, and partial candidate
+  predicates, made unique by the normative lexicographic key order); and computes
+  the Section 5.6 metrics (`evaluate` for a split, `score_predictions` for one
+  dataset): detection and disposition-aware precision/recall/F1 with 0/0 = 0,
+  micro and macro-by-class and macro-by-dataset aggregation, per-class and
+  per-disposition breakdowns, the secondary partial-credit metric, and the
+  coverage/abstention report (objective and adjudicated recall separately). Builds
+  and validates the immutable `MetricsTable`; optional gold never penalizes and
+  abstentions never count as false positives; results with an error or no gold are
+  excluded from scoring. The detection score reproduces the Appendix E worked
+  example exactly. Public API: `load_gold`, `load_gold_dir`, `match`, `evaluate`,
+  `score_predictions`, `validate_gold`, `validate_metrics`, `detector_summary`.
+  Gold-scoring documentation and a fully tested (100% coverage) subsystem.
+  Derived interpretation (documented): the per-class breakdown attributes an
+  unmatched multi-class gold item to each class in its acceptable set (standard
+  multi-label convention); this affects only the reported per-class and
+  macro-by-class views, not the fully-specified micro or macro-by-dataset metrics.
 - WP8 Detector protocol and normalization: the `detector` subsystem, the
   tool-agnostic seam any structural auditing system implements to be scored. A
   stable `Detector` protocol (`capabilities` + `detect`, with optional

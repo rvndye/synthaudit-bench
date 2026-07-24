@@ -2,10 +2,16 @@
 
 A thin CLI over the library: each subcommand parses arguments and calls one library
 function, returning the Section 10 exit codes (0 success; 2 input/validation; 3
-integrity; 5 partial dataset failures; 6 policy/compliance block). It makes the
-benchmark runnable end-to-end: load CSV datasets, audit them with the built-in
-structural baseline, score against gold, aggregate into reports, run the compliance
-suite, and report versions and the release manifest.
+integrity; 4 external/network; 5 partial dataset failures; 6 policy/compliance block;
+7 reproducibility mismatch). It makes the benchmark runnable end-to-end: acquire
+declared corpus files, load CSV datasets, audit them with the built-in structural
+baseline, score against gold, aggregate into reports, run the compliance suite,
+re-run for reproducibility, and report versions and the release manifest.
+
+The command set reconciles with Section 10 without mirroring it one-to-one; the
+mapping is documented in ``docs/cli-release.md`` (``report`` covers the architecture's
+``aggregate``/``stats``/``figures``/``reportcard`` stages over one combined report
+mapping, and ``doi`` is deferred because the library ships no Zenodo transport).
 """
 
 from __future__ import annotations
@@ -15,9 +21,11 @@ import json
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
+from synthaudit_bench.acquire import AcquireError, ChecksumError, acquire_dataset
 from synthaudit_bench.compliance import run_compliance
 from synthaudit_bench.detector.adapters.baselines import StructuralBaselineDetector
 from synthaudit_bench.gold.errors import GoldError
@@ -29,12 +37,16 @@ from synthaudit_bench.registry.errors import RegistryError
 from synthaudit_bench.registry.loader import load_registry
 from synthaudit_bench.release import build_release_manifest, dataset_manifest_entry, version_report
 from synthaudit_bench.report.render import build_report, render_json_report, render_markdown_report
-from synthaudit_bench.runner.engine import run_benchmark, write_artifacts
+from synthaudit_bench.runner.engine import RunOutcome, run_benchmark, write_artifacts
+from synthaudit_bench.runner.errors import RunnerError
 
 _OK = 0
 _INPUT = 2
+_INTEGRITY = 3
+_EXTERNAL = 4
 _PARTIAL = 5
 _COMPLIANCE = 6
+_REPRODUCIBILITY = 7
 
 
 def _load_csv(path: Path, target: str | None) -> DatasetObject:
@@ -79,13 +91,21 @@ def _cmd_validate(args: argparse.Namespace) -> int:
 
 def _cmd_audit(args: argparse.Namespace) -> int:
     datasets = [_load_csv(Path(path), args.target) for path in args.csv]
-    outcome = run_benchmark(
-        datasets,
-        StructuralBaselineDetector(),
-        split=args.split,
-        root_seed=args.seed,
-        jobs=args.jobs,
-    )
+    try:
+        outcome = run_benchmark(
+            datasets,
+            StructuralBaselineDetector(),
+            split=args.split,
+            root_seed=args.seed,
+            jobs=args.jobs,
+        )
+    except RunnerError as exc:
+        # A planning or integrity abort (a duplicate dataset id, or a content-hash
+        # mismatch) is a config/integrity failure. Section 10 maps it to exit 2 for
+        # ``audit`` ("config/integrity abort"), distinct from ``fetch``'s exit 3, so
+        # the abort surfaces as a clean exit code rather than an uncaught traceback.
+        print(f"audit error: {exc}", file=sys.stderr)
+        return _INPUT
     if args.out:
         write_artifacts(outcome, args.out)
     print(
@@ -94,8 +114,81 @@ def _cmd_audit(args: argparse.Namespace) -> int:
     return _PARTIAL if outcome.failed else _OK
 
 
+def _cmd_fetch(args: argparse.Namespace) -> int:
+    try:
+        registry = load_registry(args.registry)
+    except RegistryError as exc:
+        print(f"fetch error: {exc}", file=sys.stderr)
+        return _INPUT
+    cache = Path(args.cache)
+    fetched: list[dict[str, Any]] = []
+    for entry in registry.datasets():
+        try:
+            acquired = acquire_dataset(entry.record, cache, require_data=args.require_data)
+        except ChecksumError as exc:
+            # A cached file whose bytes contradict its declared hash is an integrity
+            # mismatch (Section 10 ``fetch`` exit 3), checked before the broader
+            # acquire-failure case because ChecksumError is an AcquireError subclass.
+            print(f"fetch integrity error: {exc}", file=sys.stderr)
+            return _INTEGRITY
+        except AcquireError as exc:
+            print(f"fetch error: {exc}", file=sys.stderr)
+            return _EXTERNAL
+        fetched.append(
+            {
+                "dataset_id": acquired.dataset_id,
+                "verified": acquired.verified,
+                "is_stub": acquired.is_stub,
+                "files": sorted(acquired.files),
+            }
+        )
+    print(json.dumps({"fetched": fetched}, indent=2, sort_keys=True))
+    return _OK
+
+
+def _cmd_reproduce(args: argparse.Namespace) -> int:
+    datasets = [_load_csv(Path(path), args.target) for path in args.csv]
+
+    def _once() -> RunOutcome:
+        return run_benchmark(
+            datasets,
+            StructuralBaselineDetector(),
+            split=args.split,
+            root_seed=args.seed,
+            jobs=args.jobs,
+        )
+
+    try:
+        first = _once()
+        second = _once()
+    except RunnerError as exc:
+        print(f"reproduce error: {exc}", file=sys.stderr)
+        return _INPUT
+    manifest_match = first.manifest.content_hash() == second.manifest.content_hash()
+    results_match = [r.content_hash() for r in first.results] == [
+        r.content_hash() for r in second.results
+    ]
+    reproduced = manifest_match and results_match
+    print(
+        json.dumps(
+            {
+                "reproduced": reproduced,
+                "manifest_hash": first.manifest.content_hash(),
+                "manifest_match": manifest_match,
+                "results_match": results_match,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return _OK if reproduced else _REPRODUCIBILITY
+
+
 def _cmd_match(args: argparse.Namespace) -> int:
     results = _load_audits(Path(args.audits))
+    if not results:
+        print(f"match error: no audit results under {args.audits}", file=sys.stderr)
+        return _INPUT
     try:
         gold = load_gold_dir(args.gold)
         table = evaluate(results, gold, split=args.split)
@@ -108,6 +201,9 @@ def _cmd_match(args: argparse.Namespace) -> int:
 
 def _cmd_report(args: argparse.Namespace) -> int:
     results = _load_audits(Path(args.audits))
+    if not results:
+        print(f"report error: no audit results under {args.audits}", file=sys.stderr)
+        return _INPUT
     report = build_report(results, split=args.split)
     if args.format == "md":
         print(render_markdown_report(report))
@@ -160,6 +256,12 @@ def _build_parser() -> argparse.ArgumentParser:
     validate.add_argument("--registry", required=True)
     validate.set_defaults(func=_cmd_validate)
 
+    fetch = sub.add_parser("fetch", help="acquire declared corpus files into a local cache")
+    fetch.add_argument("registry")
+    fetch.add_argument("--cache", required=True)
+    fetch.add_argument("--require-data", action="store_true")
+    fetch.set_defaults(func=_cmd_fetch)
+
     audit = sub.add_parser("audit", help="audit CSV datasets with the structural baseline")
     audit.add_argument("csv", nargs="+")
     audit.add_argument("--target", default=None)
@@ -180,6 +282,16 @@ def _build_parser() -> argparse.ArgumentParser:
     report.add_argument("--split", default="public-dev")
     report.add_argument("--format", choices=("json", "md"), default="json")
     report.set_defaults(func=_cmd_report)
+
+    reproduce = sub.add_parser(
+        "reproduce", help="re-run the audit twice and assert identical hashes"
+    )
+    reproduce.add_argument("csv", nargs="+")
+    reproduce.add_argument("--target", default=None)
+    reproduce.add_argument("--split", default="public-dev")
+    reproduce.add_argument("--jobs", type=int, default=1)
+    reproduce.add_argument("--seed", type=int, default=42)
+    reproduce.set_defaults(func=_cmd_reproduce)
 
     compliance = sub.add_parser("compliance", help="run the compliance suite against the baseline")
     compliance.add_argument("csv", nargs="+")

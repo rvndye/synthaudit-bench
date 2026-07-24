@@ -26,6 +26,11 @@ jobs:
         run: python -m pip install -e ".[dev]"
       - name: Lint (ruff)
         run: ruff check .
+      - name: Ruff version
+        run: |
+          which ruff
+          ruff --version
+          python -m pip show ruff
       - name: Format check (ruff)
         run: ruff format --check .
       - name: Type check (mypy, strict)

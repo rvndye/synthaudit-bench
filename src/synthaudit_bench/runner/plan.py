@@ -15,6 +15,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 
 from synthaudit_bench.model.dataset import DatasetObject
+from synthaudit_bench.runner.errors import RunnerError
 
 __all__ = ["WorkItem", "derive_seed", "plan_run"]
 
@@ -44,6 +45,12 @@ def plan_run(datasets: Iterable[DatasetObject], *, root_seed: int = 42) -> tuple
 
     Items are sorted by dataset id; each carries a derived seed and the dataset's
     content hash (the instance identity used for the manifest and the result cache).
+    Dataset ids must be unique within a run: two datasets sharing an id would collide
+    on their per-dataset seed, manifest entry, and result-cache slot, so a repeated
+    id is a planning error rather than a silently-merged run.
+
+    Raises:
+        RunnerError: if two datasets share the same id.
     """
     items = [
         WorkItem(
@@ -54,4 +61,9 @@ def plan_run(datasets: Iterable[DatasetObject], *, root_seed: int = 42) -> tuple
         )
         for dataset in datasets
     ]
+    seen: set[str] = set()
+    for item in items:
+        if item.dataset_id in seen:
+            raise RunnerError(f"duplicate dataset id {item.dataset_id!r} in the run plan")
+        seen.add(item.dataset_id)
     return tuple(sorted(items, key=lambda item: item.dataset_id))

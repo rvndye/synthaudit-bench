@@ -60,6 +60,14 @@ Homepage = "https://github.com/rvndye/synthaudit-bench"
 Repository = "https://github.com/rvndye/synthaudit-bench"
 Issues = "https://github.com/rvndye/synthaudit-bench/issues"
 
+[project.scripts]
+bench = "synthaudit_bench.cli.main:run"
+
+# The built-in structural baseline is registered through the detector entry-point
+# group (architecture Section 9); third-party detectors register the same way.
+[project.entry-points."synthaudit_bench.detectors"]
+structural-baseline = "synthaudit_bench.detector.adapters.baselines:StructuralBaselineDetector"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

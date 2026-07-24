@@ -10,16 +10,50 @@ tool.
 
 `bench` is the console entry point (`synthaudit_bench.cli.main`). Each subcommand
 parses arguments and calls one library function, returning the architecture's exit
-codes (0 success; 2 input or validation; 3 integrity; 5 partial dataset failures; 6
-policy or compliance block). The commands cover the pipeline end to end:
+codes (0 success; 2 input or validation; 3 integrity; 4 external or network; 5
+partial dataset failures; 6 policy or compliance block; 7 reproducibility mismatch).
+The commands cover the pipeline end to end:
 
 - `bench version` reports the software, benchmark, ontology, and schema versions.
 - `bench registry <root>` lists the datasets in a registry; `bench validate --registry <root>` validates it.
+- `bench fetch <registry> --cache <dir>` acquires each record's declared files into a local cache and verifies their checksums; it exits 3 on a checksum mismatch and 4 on an acquisition failure (`--require-data` turns a fetch stub into a hard failure).
 - `bench audit <csv...> --target <col> --out <dir>` audits CSV datasets with the built-in baseline and writes `audits/<id>.json` and `manifest.json`.
 - `bench match --audits <dir> --gold <dir>` scores the audits against gold into a metrics table.
 - `bench report --audits <dir> --format {json,md}` aggregates the audits into a report.
+- `bench reproduce <csv...>` runs the audit twice and asserts an identical manifest hash and identical per-dataset result hashes, exiting 7 on a mismatch.
 - `bench compliance <csv...> --gold <dir>` runs the compliance suite and exits 6 if it fails.
 - `bench release <csv...>` builds the release manifest and version report.
+
+## Reconciliation with the architecture (Section 10)
+
+The command set follows the Section 10 exit-code convention but does not mirror its
+command table one for one. The differences are deliberate and are recorded here so
+the divergence is a documented decision rather than drift.
+
+The architecture lists `aggregate`, `stats`, `figures`, and `reportcard` as separate
+stages. In the implementation these are one pure library layer
+(`synthaudit_bench.report`) exposed through a single `bench report` command whose
+JSON output carries the tidy tables, the frame-proportion statistics, the per-dataset
+metric rows, and the declarative figure specifications together in one report
+mapping. The underlying functions (`finding_rows`, `sto_summary`,
+`per_dataset_metric_rows`, `frame_proportions`, `standard_figures`,
+`build_report_card`) are all public, so a caller that wants a single stage calls it
+directly; the CLI keeps one thin command instead of four that would each re-load and
+re-aggregate the same audits.
+
+`bench doi` (Zenodo deposition) is deferred: the library intentionally ships no
+network transport, so there is no library function for a thin wrapper to call. When a
+Zenodo transport is added, `doi` becomes the thin wrapper over it; until then a
+deposition is an out-of-band release step.
+
+Two exit codes for a superficially similar problem are intentional and follow the
+per-command rows of the Section 10 table over the general convention: a content-hash
+mismatch during acquisition is `fetch` exit 3 (integrity mismatch), while a planning
+or integrity abort during `audit` — a duplicate dataset id, or a content-hash
+mismatch against expected hashes — is `audit` exit 2 ("config/integrity abort"),
+surfaced as a clean code rather than an uncaught traceback. The CLI's `_load_csv` is
+a convenience faithful-read path (`dtype=str`, no NA coercion) that does not run the
+WP7 integrity check; a caller that needs verified acquisition uses `bench fetch`.
 
 ## The compliance suite
 

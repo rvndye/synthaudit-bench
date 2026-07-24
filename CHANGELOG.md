@@ -8,6 +8,25 @@ package follows [Semantic Versioning](https://semver.org/); the **benchmark**
 ## [Unreleased]
 
 ### Added
+- WP10 Runner and execution engine: the `runner` subsystem (architecture Section
+  7). `run_benchmark` executes a detector over a set of datasets with a fixed
+  sorted-by-id dispatch order and deterministically derived per-dataset seeds
+  (`plan_run`, `derive_seed`), so outputs never depend on scheduling: a serial run
+  and a parallel (thread-pool) run of the same inputs produce identical results and
+  an identical manifest hash. Fail-open per dataset (each dataset runs through the
+  WP8 `run_detector` isolation boundary) and fail-closed on integrity (a content-hash
+  mismatch aborts with `IntegrityAbort`). Optional content-addressed result cache
+  (`ResultCache`/`FileResultCache`, `result_cache_key`, corruption-checked reads,
+  content-addressed reuse with dataset-id relabeling) and append-only completion
+  journal (`Journal`/`FileJournal`) for resumable runs; cooperative cancellation;
+  structured `RunEvent`s. Assembles and schema-validates the reproducibility
+  `RunManifest` (versions, detector identity, config hash, injected environment and
+  timestamps excluded from identity, per-dataset content hashes and statuses,
+  seeds, limits) and writes `audits/<id>.json` + `manifest.json` via
+  `write_artifacts`. No pure code reads a clock. Public API: `run_benchmark`,
+  `RunOutcome`, `plan_run`, `result_cache_key`, the cache and journal types,
+  `capture_environment`, `write_artifacts`, `run_id`. Execution-engine documentation
+  and a fully tested (100% coverage) subsystem.
 - WP9 Gold matching and metrics: the pure `gold` subsystem (architecture `gold`
   module). Loads gold tuples with boundary schema validation (`load_gold`,
   `load_gold_dir`, `validate_gold`); matches predictions against gold by the

@@ -17,6 +17,7 @@ nav:
   - Acquisition and loading: acquisition-loading.md
   - Detector protocol: detector-protocol.md
   - Gold matching and metrics: gold-scoring.md
+  - Execution engine: execution-engine.md
   - Identity and versioning: identity.md
   - Future work: future-work.md
 markdown_extensions:

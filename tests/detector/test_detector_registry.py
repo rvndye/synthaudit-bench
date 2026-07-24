@@ -88,7 +88,8 @@ def test_discover_merges_into_base_registry() -> None:
 
 
 def test_discover_default_group_reads_environment() -> None:
-    # No detectors are installed in this environment, so the real lookup is empty.
+    # Default-group discovery reads the installed entry points; the result depends on
+    # install state (once the package is installed, the packaged structural-baseline
+    # registers one detector), so assert only that discovery runs and returns a registry.
     reg = discover_detectors()
     assert isinstance(reg, DetectorRegistry)
-    assert reg.names() == ()

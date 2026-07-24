@@ -100,7 +100,10 @@ def feature_pillar(column_roles: Mapping[str, ColumnRole] | None, n_cols: int) -
     if column_roles is None:
         return None
     bearing = sum(1 for role in column_roles.values() if role in _ARTIFACT_BEARING_ROLES)
-    return 1 - bearing / max(n_cols - 1, 1)
+    # Clamp to the pillar domain [0, 1] (Appendix D.3): when the artifact-bearing count
+    # exceeds ``p - 1`` (e.g. a two-column frame with two bearing columns) the raw
+    # expression can fall below zero, which is not a valid pillar value.
+    return max(0.0, min(1.0, 1 - bearing / max(n_cols - 1, 1)))
 
 
 def bti(pillars: Pillars) -> float | None:

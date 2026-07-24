@@ -19,10 +19,12 @@ from synthaudit_bench.model.results import AuditResult, DetectorInfo
 from synthaudit_bench.report.aggregate import (
     benchmark_summary,
     finding_rows,
+    per_dataset_metric_rows,
     per_dataset_summary,
     per_detector_summary,
     sto_summary,
 )
+from synthaudit_bench.report.figures import standard_figures
 from synthaudit_bench.report.stats import frame_proportions
 
 __all__ = ["build_report", "render_json_report", "render_markdown_report"]
@@ -36,15 +38,26 @@ def build_report(
     metrics: MetricsTable | None = None,
     manifest: RunManifest | None = None,
 ) -> dict[str, Any]:
-    """Assemble the deterministic benchmark report mapping for a split."""
+    """Assemble the deterministic benchmark report mapping for a split.
+
+    The report carries the standard figure specifications alongside every tidy table
+    they consume, so each :class:`~synthaudit_bench.model.figures.FigureSpec` input
+    resolves against a table present in the report: ``sto_summary`` (class prevalence),
+    ``findings`` (disposition breakdown), and ``per_dataset_metrics`` (detection F1 by
+    dataset). ``per_dataset_metrics`` is empty when no metrics table is supplied.
+    """
+    findings = finding_rows(results)
     report: dict[str, Any] = {
         "split": split,
         "summary": benchmark_summary(results, split=split),
         "per_dataset": list(per_dataset_summary(results)),
         "sto_summary": list(sto_summary(results)),
-        "class_proportions": [
-            p.to_mapping() for p in frame_proportions(finding_rows(results), "sto_class")
-        ],
+        "findings": list(findings),
+        "per_dataset_metrics": (
+            list(per_dataset_metric_rows(metrics)) if metrics is not None else []
+        ),
+        "figures": [figure.to_mapping() for figure in standard_figures()],
+        "class_proportions": [p.to_mapping() for p in frame_proportions(findings, "sto_class")],
     }
     if detector is not None:
         report["detector_summary"] = per_detector_summary(detector, results)

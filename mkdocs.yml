@@ -16,6 +16,7 @@ nav:
   - Registry and corpus: registry.md
   - Acquisition and loading: acquisition-loading.md
   - Detector protocol: detector-protocol.md
+  - Gold matching and metrics: gold-scoring.md
   - Identity and versioning: identity.md
   - Future work: future-work.md
 markdown_extensions:

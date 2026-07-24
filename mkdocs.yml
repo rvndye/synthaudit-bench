@@ -18,6 +18,7 @@ nav:
   - Detector protocol: detector-protocol.md
   - Gold matching and metrics: gold-scoring.md
   - Execution engine: execution-engine.md
+  - Reporting and report cards: reporting.md
   - Identity and versioning: identity.md
   - Future work: future-work.md
 markdown_extensions:

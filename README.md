@@ -48,8 +48,9 @@ See `examples/` for a minimal detector plugin and a configuration walk-through, 
 
 Normative data and specifications live in `sto/`, `schemas/`, `registry/`,
 `corpus/`, and `conformance/`; the library lives in `src/synthaudit_bench/`;
-generated outputs land in `results/` and `figures/` (git-ignored). Every
-directory carries a `README.md` explaining its purpose.
+generated outputs land in `results/` and `figures/` (git-ignored). Each source
+and data directory carries a `README.md` explaining its purpose; the documentation
+site is rooted at `docs/index.md`.
 
 ## Documentation
 

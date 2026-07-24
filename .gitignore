@@ -30,3 +30,7 @@ htmlcov/
 # OS / editor
 .DS_Store
 *.swp
+
+# Delivered release artifacts (git bundle / source archive) — reproducible, not tracked
+*.bundle
+synthaudit-bench-*-src.zip

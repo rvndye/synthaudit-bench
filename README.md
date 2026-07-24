@@ -32,6 +32,18 @@ python -m pip install -e ".[dev]"
 make check          # lint, format, type, import contracts, tests
 ```
 
+## Quick start
+
+With the package installed, run the benchmark end to end on a tiny synthetic
+dataset (audit, score against gold, render a report, and check reproducibility):
+
+```bash
+bash examples/run_pipeline.sh
+```
+
+See `examples/` for a minimal detector plugin and a configuration walk-through, and
+`docs/cli-release.md` for the full command reference.
+
 ## Repository layout
 
 Normative data and specifications live in `sto/`, `schemas/`, `registry/`,

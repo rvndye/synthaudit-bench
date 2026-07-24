@@ -24,6 +24,16 @@ The commands cover the pipeline end to end:
 - `bench compliance <csv...> --gold <dir>` runs the compliance suite and exits 6 if it fails.
 - `bench release <csv...>` builds the release manifest and version report.
 
+A complete run from a CSV to a scored, rendered report and a reproducibility check
+(the same sequence lives, runnable, in `examples/run_pipeline.sh`):
+
+```bash
+bench audit data.csv --target g --split public-dev --out out
+bench match  --audits out/audits --gold gold --split public-dev
+bench report --audits out/audits --format md
+bench reproduce data.csv --target g
+```
+
 ## Reconciliation with the architecture (Section 10)
 
 The command set follows the Section 10 exit-code convention but does not mirror its

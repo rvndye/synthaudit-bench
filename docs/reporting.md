@@ -28,9 +28,11 @@ statistic.
 ## Aggregation
 
 The aggregation functions produce deterministic long-format tidy rows (`finding_rows`,
-one row per artifact; `dataset_rows`, one row per dataset) and summaries
-(`per_dataset_summary`, `per_detector_summary`, `sto_summary`, `benchmark_summary`).
-Every row set is sorted, so the same results always aggregate to the same tables.
+one row per artifact; `dataset_rows`, one row per dataset; `per_dataset_metric_rows`,
+one row per dataset of detection, disposition, and partial F1 from a scored metrics
+table) and summaries (`per_dataset_summary`, `per_detector_summary`, `sto_summary`,
+`benchmark_summary`). Every row set is sorted, so the same results always aggregate
+to the same tables.
 
 ## Statistics
 
@@ -48,14 +50,20 @@ it is not fabricated.
 and an encoding and carry no rendering logic, so a figure is reproducible from the
 specification and the table. `build_report` assembles the summaries, tidy tables,
 frame proportions, and the optional metrics table and manifest into one report
-mapping; `render_json_report` renders it as deterministic JSON and
-`render_markdown_report` as a human-readable Markdown document.
+mapping, and it carries the figure set alongside every tidy table those figures
+consume: `sto_summary` (class prevalence), `findings` (disposition breakdown), and
+`per_dataset_metrics` (detection F1 by dataset). Every `FigureSpec` input therefore
+resolves against a table present in the same report mapping, so a figure is never a
+dangling reference to a table the report does not emit; `per_dataset_metrics` is
+present but empty when no metrics table is supplied. `render_json_report` renders the
+mapping as deterministic JSON and `render_markdown_report` as a human-readable
+Markdown document.
 
 ## Public API
 
 Report cards: `build_report_card`, `bti`, `grade_for`, `PillarInputs`,
 `transparency_pillar`, `feature_pillar`, `dispositions_summary`. Aggregation:
-`finding_rows`, `dataset_rows`, `per_dataset_summary`, `per_detector_summary`,
-`sto_summary`, `benchmark_summary`. Statistics: `frame_proportions`,
+`finding_rows`, `dataset_rows`, `per_dataset_metric_rows`, `per_dataset_summary`,
+`per_detector_summary`, `sto_summary`, `benchmark_summary`. Statistics: `frame_proportions`,
 `FrameProportion`. Figures: `standard_figures` and the individual builders. Reports:
 `build_report`, `render_json_report`, `render_markdown_report`.

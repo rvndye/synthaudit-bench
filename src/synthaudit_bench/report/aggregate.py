@@ -12,6 +12,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
+from synthaudit_bench.model.metrics import MetricsTable
 from synthaudit_bench.model.results import AuditResult, DetectorInfo
 from synthaudit_bench.model.tuples import ArtifactTuple
 
@@ -19,6 +20,7 @@ __all__ = [
     "benchmark_summary",
     "dataset_rows",
     "finding_rows",
+    "per_dataset_metric_rows",
     "per_dataset_summary",
     "per_detector_summary",
     "sto_summary",
@@ -58,6 +60,24 @@ def dataset_rows(results: Sequence[AuditResult]) -> tuple[dict[str, Any], ...]:
             "error": result.error.code if result.error is not None else None,
         }
         for result in sorted(results, key=lambda r: r.dataset_id)
+    )
+
+
+def per_dataset_metric_rows(metrics: MetricsTable) -> tuple[dict[str, Any], ...]:
+    """Return one tidy row per dataset of detection, disposition, and partial F1.
+
+    These rows are the ``per_dataset_metrics`` tidy table the ``detector-f1`` figure
+    consumes. ``metrics.per_dataset`` is already ordered by dataset id, so the rows
+    are deterministic; ``partial_f1`` is ``None`` when partial credit was not scored.
+    """
+    return tuple(
+        {
+            "dataset_id": entry.dataset_id,
+            "detection_f1": entry.detection.f1,
+            "disposition_f1": entry.disposition_aware.f1,
+            "partial_f1": entry.partial_credit.f1 if entry.partial_credit is not None else None,
+        }
+        for entry in metrics.per_dataset
     )
 
 

@@ -27,6 +27,7 @@ from collections.abc import Callable, Iterable, Mapping
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
+from types import MappingProxyType
 from typing import Any
 
 from synthaudit_bench import schemas
@@ -165,9 +166,17 @@ def run_benchmark(
         IntegrityAbort: if a dataset's content hash does not match its expected hash.
     """
     plan = plan_run(datasets, root_seed=root_seed)
-    detector_info = _detector_info(detector)
     active_cache: ResultCache = cache if cache is not None else NullCache()
     events: list[RunEvent] = [RunEvent("run_start")]
+    try:
+        detector_info = _detector_info(detector)
+    except Exception as exc:  # fail-open: capabilities() discovery must not abort the batch
+        # Fall back to a minimal identity built from the type name. Every dataset
+        # independently records the structured ``init`` failure via ``run_detector``
+        # (which re-invokes ``capabilities()``), so the run completes with per-dataset
+        # error records instead of terminating the whole batch here.
+        detector_info = DetectorInfo(name=type(detector).__name__, version="unknown")
+        events.append(RunEvent("detector_init_error", status=type(exc).__name__))
 
     expected = dict(expected_hashes or {})
     for item in plan:
@@ -202,7 +211,11 @@ def run_benchmark(
             seed=item.seed,
             bench_version=bench_version,
             sto_version=sto_version,
-            thresholds=thresholds if thresholds is not None else {},
+            thresholds=(
+                MappingProxyType(dict(thresholds))
+                if thresholds is not None
+                else MappingProxyType({})
+            ),
             timeout_s=timeout_s,
             config_hash=config_hash,
         )

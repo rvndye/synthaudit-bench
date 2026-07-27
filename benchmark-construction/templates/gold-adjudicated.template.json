@@ -1,0 +1,25 @@
+[
+  {
+    "support": ["derived_label", "input_one", "input_two"],
+    "classes": ["STO-A06"],
+    "dispositions": ["target_leakage"],
+    "gold_type": "adjudicated",
+    "evidence": "Two independent annotators agree derived_label is a shallow deterministic rule over input_one and input_two at high fidelity, removing most majority-class error. Reconciled; not derived from any detector.",
+    "optional": false
+  },
+  {
+    "support": ["dominant_feature"],
+    "classes": ["STO-P01"],
+    "dispositions": ["target_leakage"],
+    "gold_type": "adjudicated",
+    "evidence": "dominant_feature alone reaches a baseline-relative near-perfect score on the target on non-degenerate slices. Annotator-adjudicated, oracle-free."
+  },
+  {
+    "support": ["predictable_column"],
+    "classes": ["STO-D01"],
+    "dispositions": ["structural_constraint"],
+    "gold_type": "adjudicated",
+    "evidence": "predictable_column is near-deterministic out-of-sample from the other columns via a general learner, not explained by any A-class identity. Annotator-adjudicated.",
+    "optional": true
+  }
+]

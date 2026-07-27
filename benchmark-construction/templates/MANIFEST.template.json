@@ -1,0 +1,33 @@
+{
+  "_comment": "Release manifest TEMPLATE (specification Section 6.1.5). Replace placeholders. The instances array lists one entry per released dataset instance; the balance and reproducibility_asymmetry blocks are corpus-level design records required by Sections 6.3.2 and 6.1.4. This template holds no real datasets.",
+  "benchmark_version": "1.0.0",
+  "sto_version": "1.0.0",
+  "schema_versions": ["1.0.0"],
+  "released": "REPLACE-ISO-8601-DATE",
+  "enumeration": {
+    "_comment": "Census frame provenance (Section 6.2). Reproduces the census frame.",
+    "repository": "REPLACE-NAMED-REPOSITORY",
+    "query": "REPLACE-EXACT-QUERY",
+    "retrieved": "REPLACE-ISO-8601-DATE",
+    "script": "corpus/census/frame.md"
+  },
+  "reproducibility_asymmetry": "REPLACE: state which datasets are redistributable synthetic-truth data and which are fetch-only licensed data.",
+  "balance": {
+    "_comment": "Designed evaluation-corpus balance (Section 6.3.2), reported not sampled.",
+    "class_targets": {"STO-A01": 0, "STO-S02": 0, "...": 0},
+    "clean_negative_fraction_target": 0.0
+  },
+  "instances": [
+    {
+      "id": "example-dataset-id",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "bytes": 0,
+      "rows": 0,
+      "cols": 0,
+      "corpus": "evaluation",
+      "split": "public-dev",
+      "license": "CC0-1.0",
+      "source": ["https://example.org/example-dataset-id.csv"]
+    }
+  ]
+}

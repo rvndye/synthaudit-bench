@@ -1,0 +1,4 @@
+candidate_id,source_repository,source_url,retrieved,decision,reason,generator_family,provenance_confidence,duplicate_of,capping_action
+EXAMPLE-candidate-1,REPLACE-repo,https://example.org/x,2026-01-01,include,"tabular synthetic; license permits scripted fetch; generator family assignable",rule-based,documented,,
+EXAMPLE-candidate-2,REPLACE-repo,https://example.org/y,2026-01-01,exclude,"not tabular (image dataset)",,,,
+EXAMPLE-candidate-3,REPLACE-repo,https://example.org/z,2026-01-01,exclude,"near-duplicate beyond cap",gan,inferred,EXAMPLE-candidate-1,capped-near-duplicate

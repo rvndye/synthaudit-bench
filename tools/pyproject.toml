@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "synthaudit-benchkit"
+version = "0.1.0"
+description = "Benchmark construction and execution infrastructure for SynthAudit-Bench"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{ name = "Randy Erwin", email = "erwinrandy3@gmail.com" }]
+
+# The infrastructure drives the frozen software through its public API. It is a
+# separate distribution from `synthaudit-bench`; installing it does not change the
+# frozen package.
+dependencies = ["synthaudit-bench"]
+
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.6",
+  "mypy>=1.10",
+  "pytest>=8.0",
+  "pytest-cov>=5.0",
+]
+
+[project.scripts]
+benchkit = "benchkit.cli:run"
+
+[tool.setuptools]
+packages = ["benchkit"]
+
+[tool.setuptools.package-data]
+benchkit = ["py.typed"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["benchkit", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["benchkit", "tests"]
+warn_unused_configs = true
+
+# See src/synthaudit_bench pyproject: numpy is dragged into mypy's graph transitively
+# through pytest's typed `approx` API, and numpy >= 2.5 stubs use PEP 695 syntax that
+# is invalid under python_version = "3.11". Skip following numpy's stubs.
+[[tool.mypy.overrides]]
+module = ["numpy"]
+follow_imports = "skip"
+follow_imports_for_stubs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
